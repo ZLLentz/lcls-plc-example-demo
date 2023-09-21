@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="MAIN" Id="{cddc3c88-ce26-44a0-81dc-b19499786a16}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM MAIN
+VAR
+    {attribute 'pytmc' := '
+        pv: @(PREFIX):DEMO:COUNTER
+        io: i
+    '}
+    nCounter: UDINT := 100;
+    sError: STRING;
+
+    {attribute 'TcLinkTo' := 'TIIB[Term 3 (EL5042)]^FB Inputs Channel 1^Position'}
+    nEncoderCount AT %I*: ULINT;
+    {attribute 'TcLinkTo' := 'TIIB[Term 6 (EL2004)]^Channel 1^Output'}
+    bOutput AT %Q*: BOOL;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[sError := F_MotionErrorCodeLookup(nCounter);
+bOutput := TRUE;
+IF sError = F_MotionErrorCodeLookup(1) THEN
+    nCounter := nCounter + 2;
+END_IF
+]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>
